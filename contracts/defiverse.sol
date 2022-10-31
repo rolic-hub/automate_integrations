@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.4;
+pragma solidity 0.8.4;
+
 import "./utilities/IERC20.sol";
 import "./integrations/LidoFinance.sol";
 import "./integrations/AaveProtocol.sol";
@@ -22,12 +23,62 @@ interface KeeperRegistrarInterface {
 }
 
 contract Defiverse is AaveProtocol, CompoundIntegration, LidoFinance {
-    constructor() AaveProtocol() CompoundIntegration() LidoFinance() {}
+    /*
+     *  Aave contracts main methods from the AaveProtocol contract
+     */
+        struct AaveDeposit {
+            address asset,
+            uint256 amount
+        }
+        struct AaveBorrow {
+            address asset,
+            uint256 amount,
+            uint256 interestRateMode
+        }
+        struct AaveRepay {
+            address asset,
+            uint256 amount
+            uint256 interestRateMode
+        }
+         struct AaveWithdraw {
+            address asset,
+            uint256 amount
+        }
+
+        mapping (bool => AaveDeposit) isDeposit;
+        
+
+    /*
+     * Compound contracts main methods from the CompoundIntegration contract
+     */
+       struct compound {
+        address asset,
+        uint256 amount 
+       }
+
+    /*
+     * Lido finance contracts main methods form the LidoFinance contract
+     */
+    struct Lido {
+        address token,
+        uint256 amount
+    }
+
+    constructor() AaveProtocol() CompoundIntegration() LidoFinance() {
+
+    }
+
+    function chooseFunction() public {
+        if(isDeposit){
+            AaveDeposit.asset = 
+        }
+    }
 
     function registerAndPredictID(uint256 amount) public {
         (State memory state, Config memory _c, address[] memory _k) = i_registry
             .getState();
         uint256 oldNonce = state.nonce;
+        //bytes memory checkData = abi.encode(assest, assetAmount);
         bytes memory payload = abi.encode(
             "Defiverse",
             "0x",
@@ -57,7 +108,7 @@ contract Defiverse is AaveProtocol, CompoundIntegration, LidoFinance {
                     )
                 )
             );
-            counterToUpkeepID = upkeepID;
+            //counterToUpkeepID = upkeepID;
         } else {
             revert("auto-approve disabled");
         }
@@ -86,4 +137,8 @@ contract Defiverse is AaveProtocol, CompoundIntegration, LidoFinance {
     {}
 
     function performUpkeep(bytes calldata performData) external {}
+
+    function checkDataInfo() internal pure returns (bytes memory checkData) {
+
+    }
 }
